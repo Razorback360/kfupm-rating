@@ -1,0 +1,13 @@
+{ 
+    "Landing": {
+        "Header": "Tawasol Platform",
+        "Login": "Login",
+        "SubmitRatingAnon": "Submit Anonymously",
+        "SubmitRatingUser": "Submit as User",
+        "Evaluation": "Submit Evaluation",
+        "Note": "Submit Note",
+        "Complaint": "Submit Complaint",
+        "Suggestion": "Submit Suggestion",
+        "Other": "Submit Other"
+    }
+}

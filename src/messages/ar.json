@@ -1,0 +1,13 @@
+{ 
+    "Landing": {
+        "Header": "منصة تواصل",
+        "Login": "تسجيل الدخول",
+        "SubmitRatingAnon": "إرسال بشكل مجهول",
+        "SubmitRatingUser": "إرسال كمستخدم",
+        "Evaluation": "إرسال تقييم",
+        "Note": "إرسال ملاحظة",
+        "Complaint": "إرسال شكوى",
+        "Suggestion": "إرسال اقتراح",
+        "Other": "إرسال اخرى"
+    }
+}
