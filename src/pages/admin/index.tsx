@@ -1,12 +1,24 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useTranslations } from "next-intl"
+
+import { api } from "~/utils/api";
 import { type GetServerSidePropsContext} from "next";
 import Card from "~/components/Card";
 import { useRouter } from "next/router";
 
 export default function SubmitAccess() {
+    // const hello = api.submission.getSubmissions.useQuery({ text: "from tRPC" });
     // HOOKS
+
+    const cols = [
+        {key: "id", name: "ID", width: 0},
+        {key: "type", name: translation("type")},
+        {key: "rating", name: translation("rating")},
+        {key: "department", name: translation("department")},
+        
+    ]
+
     const translation = useTranslations("Landing")
     // const locale = useLocale()
     const session = useSession()

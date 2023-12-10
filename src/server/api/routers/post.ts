@@ -1,3 +1,4 @@
+import { Type } from "@prisma/client";
 import { z } from "zod";
 
 import {
@@ -6,37 +7,61 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
-export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
+export const submissionRouter = createTRPCRouter({
+  submit: publicProcedure
+    .input(z.object({ title: z.string(), area: z.string(), description: z.optional(z.string()), name: z.optional(z.string()), phone: z.optional(z.string()), email: z.optional(z.string()), rating: z.optional(z.number()), type: z.string()}))
+    .mutation(async ({ ctx, input }) => {
+      let type: Type = input.type.toUpperCase() as Type
+      
+      await ctx.db.submission.create({
+        data:{
+          title: input.title,
+          rating: input.rating,
+          notes: input.description,
+          department: input.area,
+          type: type,
+          visitor: input.name || input.phone || input.email ? {create: {
+            email: input.email,
+            phone: input.phone,
+            name: input.name
+          }} : undefined
+        }
+      })
+
       return {
-        greeting: `Hello ${input.text}`,
+        error: false,
+        message: "Recorded"
       };
     }),
 
-  create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+  submitLoggedIn: protectedProcedure
+  .input(z.object({ title: z.string(), area: z.string(), description: z.optional(z.string()), name: z.optional(z.string()), phone: z.optional(z.string()), email: z.optional(z.string()), rating: z.optional(z.number()), type: z.string()}))
+  .mutation(async ({ ctx, input }) => {
+    
+    let type: Type;
+    switch(input.type){
+      case "evaluation": type = "EVALUATION"
+      case "note": type = "NOTE"
+      case "complaint": type = "COMPLAINT"
+      case "suggestion": type = "SUGGESTION"
+      case "other": type = "OTHER"
+      default: type = "EVALUATION"
+    }
 
-      return ctx.db.post.create({
-        data: {
-          name: input.name,
-          createdBy: { connect: { id: ctx.session.user.id } },
-        },
-      });
-    }),
+    await ctx.db.submission.create({
+      data:{
+        title: input.title,
+        rating: input.rating,
+        notes: input.description,
+        department: input.area,
+        type: type,
+        userId: ctx.session.user.id
+      }
+    })
 
-  getLatest: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.post.findFirst({
-      orderBy: { createdAt: "desc" },
-      where: { createdBy: { id: ctx.session.user.id } },
-    });
-  }),
-
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
+    return {
+      error: false,
+      message: "Recorded"
+    };
   }),
 });

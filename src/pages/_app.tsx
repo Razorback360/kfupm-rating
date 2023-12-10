@@ -1,8 +1,8 @@
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
-import { NextIntlClientProvider } from 'next-intl';
-
+import { NextIntlClientProvider } from "next-intl";
+import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
@@ -12,11 +12,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const { locale } = useRouter()
+  const { locale } = useRouter();
   return (
     <SessionProvider session={session}>
       <NextIntlClientProvider messages={pageProps.messages}>
-        <div dir={locale === "ar" ? "rtl" : "ltr"} className="flex justify-center items-center min-h-screen bg-[#D9DAE4] flex-row flex-wrap w-screen">
+      <Navbar></Navbar>
+        <div
+          dir={locale === "ar" ? "rtl" : "ltr"}
+          className="flex min-h-screen w-screen max-w-[100%] flex-row flex-wrap items-center justify-center overflow-x-hidden  whitespace-nowrap bg-[#D9DAE4]"
+        >
           <Component {...pageProps} />
         </div>
       </NextIntlClientProvider>

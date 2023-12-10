@@ -6,37 +6,67 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  ext_expires_in    Int?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model User {
-  id      String   @id @default(uuid())
-  email   String
-  name    String
-  phone   String
-  hash    String
-  role    Role     @default(USER)
-  ratings Rating[]
+  id            String       @id @default(cuid())
+  name          String?
+  email         String?      @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  role          Role         @default(USER)
+  submission    Submission[]
 }
 
 model Visitor {
-  id      String   @id @default(uuid())
-  email   String?
-  phone   String?
-  name    String?
-  ratings Rating[]
+  id         String       @id @default(uuid())
+  email      String?
+  phone      String?
+  name       String?
+  submission Submission[]
 }
 
-model Rating {
+model Submission {
   id         String   @id @default(uuid())
-  value      Int?
-  notes      String?  @db.Text 
-  department String?
-  type       Type     @default(RATING)
+  title      String
+  rating     Int?
+  notes      String?  @db.Text
+  department String
+  type       Type     @default(EVALUATION)
   User       User?    @relation(fields: [userId], references: [id])
   userId     String?
-  Visitor    Visitor? @relation(fields: [visitorId], references: [id])
+  visitor    Visitor? @relation(fields: [visitorId], references: [id])
   visitorId  String?
 }
 
@@ -46,8 +76,8 @@ enum Role {
 }
 
 enum Type {
-  RATING
-  CONCERN
+  EVALUATION
+  NOTE
   COMPLAINT
   SUGGESTION
   OTHER

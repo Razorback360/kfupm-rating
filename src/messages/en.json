@@ -9,5 +9,18 @@
         "Complaint": "Submit Complaint",
         "Suggestion": "Submit Suggestion",
         "Other": "Submit Other"
+    },
+    "Submit": {
+        "Header": "Tawasol Platform",
+        "Title": "Subject",
+        "Area": "Office & Departments",
+        "Description": "Description",
+        "Name": "Name",
+        "Phone": "Phone",
+        "Email": "Email",
+        "Info": "User Contact Information (Optional)",
+        "Button": "Submit",
+        "Rating": "Rating",
+        "Mandatory": "Fields marked with * are mandatory"
     }
 }

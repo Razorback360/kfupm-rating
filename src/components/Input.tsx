@@ -8,7 +8,7 @@ export default function Input({ icon: Icon, ...props }) {
 
 			<input
 				{...props}
-				className="w-full p-3 pl-12 border-kfupm-dark-green border-opacity-60 border-2 focus:bg-opacity-50 transition outline-none rounded-md"
+				className="w-full p-3 border-kfupm-dark-green border-opacity-60 border-2 focus:bg-opacity-50 transition outline-none rounded-md"
 			/>
 		</div>
 	)
