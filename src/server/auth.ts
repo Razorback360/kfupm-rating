@@ -46,19 +46,17 @@ export const authOptions: NextAuthOptions = {
       user: {
         ...session.user,
         id: user.id,
+        role: user.role
       },
     }),
   },
   secret: env.NEXTAUTH_SECRET,
   debug: env.NODE_ENV === "development",
   adapter: PrismaAdapter(db),
-  pages: {
-    signIn: "/auth/login",
-  },
   providers: [
     AzureADProvider({
       id: "azure-ad",
-      name: "Microsoft",
+      name: "KFUPM",
       clientId: env.AZURE_AD_B2C_CLIENT_ID,
       clientSecret: env.AZURE_AD_B2C_CLIENT_SECRET,
       wellKnown: `https://login.microsoftonline.com/${env.AZURE_AD_B2C_TENANT_NAME}/v2.0/.well-known/openid-configuration`,
@@ -139,10 +137,14 @@ export const authOptions: NextAuthOptions = {
         if (!profileObject.name || !profileObject.email) {
           throw new Error("NO NAME OR EMAIL: Unable to fetch profile data");
         }
-        // TODO @SauceX22 validate if the user is an admin through their id with known admin ids
+        const adminCheck = await db.user.findFirst({
+          where: {
+            role: "ADMIN"
+          }
+        })
         return {
           ...profileObject,
-          role: "USER",
+          role: adminCheck? "USER":"ADMIN",
         };
       },
     }),

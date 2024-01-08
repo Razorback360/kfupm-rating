@@ -11,7 +11,7 @@ export const submissionRouter = createTRPCRouter({
   submit: publicProcedure
     .input(z.object({ title: z.string(), area: z.string(), description: z.optional(z.string()), name: z.optional(z.string()), phone: z.optional(z.string()), email: z.optional(z.string()), rating: z.optional(z.number()), type: z.string()}))
     .mutation(async ({ ctx, input }) => {
-      let type: Type = input.type.toUpperCase() as Type
+      const type: Type = input.type.toUpperCase() as Type
       
       await ctx.db.submission.create({
         data:{
@@ -40,12 +40,12 @@ export const submissionRouter = createTRPCRouter({
     
     let type: Type;
     switch(input.type){
-      case "evaluation": type = "EVALUATION"
-      case "note": type = "NOTE"
-      case "complaint": type = "COMPLAINT"
-      case "suggestion": type = "SUGGESTION"
-      case "other": type = "OTHER"
-      default: type = "EVALUATION"
+      case "evaluation": type = "EVALUATION"; break;
+      case "note": type = "NOTE"; break;
+      case "complaint": type = "COMPLAINT"; break;
+      case "suggestion": type = "SUGGESTION"; break;
+      case "other": type = "OTHER"; break;
+      default: type = "EVALUATION"; break;
     }
 
     await ctx.db.submission.create({
@@ -64,4 +64,16 @@ export const submissionRouter = createTRPCRouter({
       message: "Recorded"
     };
   }),
+  submissions: protectedProcedure
+  .query(async ({ctx}) => {
+    if(ctx.session.user.role === "ADMIN"){
+      const submissions = await ctx.db.submission.findMany({
+        include: {
+          visitor: true,
+          User: true
+        }
+      })
+      return submissions
+    }
+  })
 });

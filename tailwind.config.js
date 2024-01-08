@@ -16,7 +16,11 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+				sans: ["Poppins", "Hacen Tunisia"],
+			},
       colors: {
+        "kfupm-dark-green": "#008540",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

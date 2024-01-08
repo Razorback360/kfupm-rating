@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useTranslations } from "next-intl"
 import { type GetServerSidePropsContext} from "next";
@@ -11,7 +11,6 @@ export default function SubmitAccess() {
     // const locale = useLocale()
     const session = useSession()
     const router = useRouter()
-    console.log(router.query.type)
     return (
         <>
             <Head>
@@ -32,10 +31,10 @@ export default function SubmitAccess() {
                 <Card
                     cardTitle={translation("SubmitRatingUser")}
                     onClick={async () => {
-                        if (session) {
+                        if (session.status === "authenticated") {
                             await router.push(`/submit/${router.query.type as string}/user`)
                         } else {
-                            await router.push("/auth/login")
+                            await signIn()
                         }
                     }}
                 />

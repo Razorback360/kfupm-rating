@@ -59,6 +59,7 @@ model Visitor {
 
 model Submission {
   id         String   @id @default(uuid())
+  date       DateTime @default(now())
   title      String
   rating     Int?
   notes      String?  @db.Text
